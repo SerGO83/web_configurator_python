@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMINAL // CONTROL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="scanlines"></div>
+
+    <div id="offline-banner" class="offline-banner">
+        ⚠ КРИТИЧЕСКАЯ ОШИБКА: СВЯЗЬ С СЕРВЕРОМ ПОТЕРЯНА
+    </div>
+
+    <h1><span class="glitch" data-text="ГЛАВНЫЙ ПУЛЬТ УПРАВЛЕНИЯ">ГЛАВНЫЙ ПУЛЬТ УПРАВЛЕНИЯ</span></h1>
+
+    <!-- АНАЛОГОВАЯ ПАНЕЛЬ -->
+    <div class="panel">
+        <h2>// МОДУЛЬ_АНАЛОГОВЫХ_СИГНАЛОВ_01 //</h2>
+        <div class="container">
+            <div class="column">
+                {% for var_id, var_data in variables.items() %}
+                <div class="row-item">
+                    <span class="label">[{{ var_id | upper }}]</span>
+                    <span id="display-{{ var_id }}" class="value-display">{{ var_data.value }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="column">
+                {% for var_id, var_data in variables.items() %}
+                <div class="slider-row">
+                    <input type="number" class="limit-input" id="min-{{ var_id }}" data-var="{{ var_id }}" value="{{ var_data.min }}" step="1">
+                    <input type="range" id="slider-{{ var_id }}" data-var="{{ var_id }}" min="{{ var_data.min }}" max="{{ var_data.max }}" value="{{ var_data.value }}">
+                    <input type="number" class="limit-input" id="max-{{ var_id }}" data-var="{{ var_id }}" value="{{ var_data.max }}" step="1">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ЦИФРОВАЯ ПАНЕЛЬ -->
+    <div class="panel">
+        <h2>// МОДУЛЬ_ЦИФРОВЫХ_СИГНАЛОВ_02 //</h2>
+        <div class="container">
+            <div class="column">
+                {% for var_id, value in digital_vars.items() %}
+                <div class="row-item">
+                    <span class="label">[{{ var_id | upper }}]</span>
+                    <!-- СТРОГО СООТВЕТСТВУЕТ КОНСТАНТАМ В JS -->
+                    <span id="d-display-{{ var_id }}" class="value-display {{ 'active' if value else 'inactive' }}">{{ "[ ВКЛ ]" if value else "[ ВЫКЛ ]" }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="column">
+                {% for var_id, value in digital_vars.items() %}
+                <div class="digital-row">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-{{ var_id }}" data-var="{{ var_id }}" {% if value %}checked{% endif %}>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <button class="invert-btn" id="btn-inv-{{ var_id }}" data-var="{{ var_id }}" title="Инвертировать состояние">[ ИНВЕРСИЯ ]</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
